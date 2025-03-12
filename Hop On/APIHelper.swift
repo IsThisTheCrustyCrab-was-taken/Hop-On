@@ -155,7 +155,6 @@ func fetchMapRotation() async throws -> ApexMapRotationResponse {
     guard let apiKey = UserDefaults(suiteName: "group.com.bk.hop-on")?.string(forKey: "API_KEY"), !apiKey.isEmpty else {
         throw APIError.missingAPIKey
     }
-//    let apiKey = "***REMOVED***"
 
     // Build the URL string with version=2
     let urlString = "https://api.mozambiquehe.re/maprotation?auth=\(apiKey)&version=2"
