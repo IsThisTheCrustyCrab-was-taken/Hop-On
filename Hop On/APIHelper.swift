@@ -66,7 +66,7 @@ let dummyRotationDefault: RotationDetail = .init(
     end: 1740447000,
     readableDateStart: "2021-02-23T00:00:00Z",
     readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Olympus",
+    map: "Placeholder",
     code: "DOR",
     durationInSecs: 3600,
     durationInMinutes: 60,
@@ -83,7 +83,7 @@ let dummyRotationDefaultFuture: RotationDetail = .init(
     end: 6961788000,
     readableDateStart: "2021-02-23T00:00:00Z",
     readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Olympus",
+    map: "Placeholder",
     code: "DOR",
     durationInSecs: 3600,
     durationInMinutes: 60,
@@ -100,7 +100,7 @@ let dummyRotationLTM: RotationDetail = .init(
     end: 1740447000,
     readableDateStart: "2021-02-23T00:00:00Z",
     readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Olympussy",
+    map: "Placeholder",
     code: "DOR",
     durationInSecs: 3600,
     durationInMinutes: 60,
@@ -109,7 +109,7 @@ let dummyRotationLTM: RotationDetail = .init(
     remainingMins: 1025,
     remainingTimer: "17:04:35",
     isActive: nil,
-    eventName: "Fornite"
+    eventName: "Fontknight"
 )
 
 let dummyRotationLTMFuture: RotationDetail = .init(
@@ -117,7 +117,7 @@ let dummyRotationLTMFuture: RotationDetail = .init(
     end: 6961788000,
     readableDateStart: "2021-02-23T00:00:00Z",
     readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Olympussy",
+    map: "Placeholder",
     code: "DOR",
     durationInSecs: 3600,
     durationInMinutes: 60,
@@ -126,7 +126,7 @@ let dummyRotationLTMFuture: RotationDetail = .init(
     remainingMins: 1025,
     remainingTimer: "17:04:35",
     isActive: nil,
-    eventName: "Fornite"
+    eventName: "Fontknight"
 )
 
 let dummyModeRotationDefault: ModeRotation = .init(
