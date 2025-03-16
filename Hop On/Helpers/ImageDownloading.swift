@@ -11,164 +11,7 @@ import Foundation
 import SwiftUICore
 import UIKit
 
-// Root response struct mapping the three rotations.
-struct ApexMapRotationResponse: Codable {
-    let battleRoyale: ModeRotation?
-    let ranked: ModeRotation?
-    let ltm: ModeRotation?
 
-    enum CodingKeys: String, CodingKey {
-        case battleRoyale = "battle_royale"
-        case ranked
-        case ltm
-    }
-}
-
-// Contains current and next rotation details for a given mode.
-struct ModeRotation: Codable, Hashable {
-    static func == (lhs: ModeRotation, rhs: ModeRotation) -> Bool {
-        return lhs.current == rhs.current && lhs.next == rhs.next
-    }
-
-    let current: RotationDetail
-    let next: RotationDetail?
-}
-
-// Details for a single rotation period.
-struct RotationDetail: Codable, Hashable {
-    let start: Int
-    let end: Int
-    let readableDateStart: String
-    let readableDateEnd: String
-    let map: String
-    let code: String
-    let durationInSecs: Int
-    let durationInMinutes: Int
-    let asset: String
-    let remainingSecs: Int?
-    let remainingMins: Int?
-    let remainingTimer: String?
-    let isActive: Bool?
-    let eventName: String?
-
-    enum CodingKeys: String, CodingKey {
-        case start, end, map, code, asset
-        case readableDateStart = "readableDate_start"
-        case readableDateEnd = "readableDate_end"
-        case durationInSecs = "DurationInSecs"
-        case durationInMinutes = "DurationInMinutes"
-        case remainingSecs, remainingMins, remainingTimer, isActive, eventName
-    }
-}
-
-let dummyRotationDefault: RotationDetail = .init(
-    start: 1608457600,
-    end: 1740447000,
-    readableDateStart: "2021-02-23T00:00:00Z",
-    readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Placeholder",
-    code: "DOR",
-    durationInSecs: 3600,
-    durationInMinutes: 60,
-    asset: "https://apexlegendsstatus.com/assets/maps/Olympus.png",
-    remainingSecs: 61475,
-    remainingMins: 1025,
-    remainingTimer: "17:04:35",
-    isActive: nil,
-    eventName: nil
-)
-
-let dummyRotationDefaultFuture: RotationDetail = .init(
-    start: 1608457600,
-    end: 6961788000,
-    readableDateStart: "2021-02-23T00:00:00Z",
-    readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Placeholder",
-    code: "DOR",
-    durationInSecs: 3600,
-    durationInMinutes: 60,
-    asset: "https://apexlegendsstatus.com/assets/maps/Olympus.png",
-    remainingSecs: 61475,
-    remainingMins: 1025,
-    remainingTimer: "17:04:35",
-    isActive: nil,
-    eventName: nil
-)
-
-let dummyRotationLTM: RotationDetail = .init(
-    start: 1608457600,
-    end: 1740447000,
-    readableDateStart: "2021-02-23T00:00:00Z",
-    readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Placeholder",
-    code: "DOR",
-    durationInSecs: 3600,
-    durationInMinutes: 60,
-    asset: "https://apexlegendsstatus.com/assets/maps/Olympus.png",
-    remainingSecs: 61475,
-    remainingMins: 1025,
-    remainingTimer: "17:04:35",
-    isActive: nil,
-    eventName: "Fontknight"
-)
-
-let dummyRotationLTMFuture: RotationDetail = .init(
-    start: 1608457600,
-    end: 6961788000,
-    readableDateStart: "2021-02-23T00:00:00Z",
-    readableDateEnd: "2021-02-24T00:00:00Z",
-    map: "Placeholder",
-    code: "DOR",
-    durationInSecs: 3600,
-    durationInMinutes: 60,
-    asset: "https://apexlegendsstatus.com/assets/maps/Olympus.png",
-    remainingSecs: 61475,
-    remainingMins: 1025,
-    remainingTimer: "17:04:35",
-    isActive: nil,
-    eventName: "Fontknight"
-)
-
-let dummyModeRotationDefault: ModeRotation = .init(
-    current: dummyRotationDefault,
-    next: dummyRotationDefaultFuture
-)
-
-
-
-let dummyRotationResponseDefault: ApexMapRotationResponse = .init(
-    battleRoyale: dummyModeRotationDefault,
-    ranked: dummyModeRotationDefault,
-    ltm: .init(current: dummyRotationLTM, next: dummyRotationLTMFuture)
-)
-
-enum APIError: Error {
-    case missingAPIKey
-    case invalidURL
-}
-
-func fetchMapRotation() async throws -> ApexMapRotationResponse {
-    // Retrieve your API key from AppStorage or your preferred storage method
-//    guard let apiKey = UserDefaults.standard.string(forKey: "API_KEY"), !apiKey.isEmpty else {
-//        throw APIError.missingAPIKey
-//    }
-    guard let apiKey = UserDefaults(suiteName: "group.com.bk.hop-on")?.string(forKey: "API_KEY"), !apiKey.isEmpty else {
-        throw APIError.missingAPIKey
-    }
-
-    // Build the URL string with version=2
-    let urlString = "https://api.mozambiquehe.re/maprotation?auth=\(apiKey)&version=2"
-    guard let url = URL(string: urlString) else {
-        throw APIError.invalidURL
-    }
-
-    // Fetch the data
-    let (data, _) = try await URLSession.shared.data(from: url)
-    // Decode the JSON into our MapRotation model
-    let decoder = JSONDecoder()
-    let rotationResponse = try decoder.decode(ApexMapRotationResponse.self, from: data)
-    return rotationResponse
-}
 
 actor ImageDownloadManager {
     static let shared = ImageDownloadManager()
@@ -213,12 +56,12 @@ class imgStore {
 }
 
 func saveImages(_ response: ApexMapRotationResponse) async throws {
-    try await saveImagesFromResponse(response, gameMode: "battle_royale")
-    try await saveImagesFromResponse(response, gameMode: "ranked")
-    try await saveImagesFromResponse(response, gameMode: "ltm")
+    try await saveImageForGameMode(response, gameMode: "battle_royale")
+    try await saveImageForGameMode(response, gameMode: "ranked")
+    try await saveImageForGameMode(response, gameMode: "ltm")
 }
 
-func saveImagesFromResponse(_ response: ApexMapRotationResponse, gameMode: String) async throws {
+func saveImageForGameMode(_ response: ApexMapRotationResponse, gameMode: String) async throws {
     var selectedResponse: ModeRotation? {
         switch gameMode {
         case "battle_royale":
@@ -233,7 +76,7 @@ func saveImagesFromResponse(_ response: ApexMapRotationResponse, gameMode: Strin
     let curURL = selectedResponse.current.asset
     let nextURL = selectedResponse.next?.asset
 
-    if let url = URL(string: curURL) {
+    if let url = URL(string: curURL), !imageExistsInSharedContainer(url: url){
         let curIMG = try await ImageDownloadManager.shared.downloadImage(url)
         guard let curIMG else {return}
         do {
@@ -243,7 +86,7 @@ func saveImagesFromResponse(_ response: ApexMapRotationResponse, gameMode: Strin
             print(error.localizedDescription)
         }
     }
-    if let url = URL(string: nextURL ?? "") {
+    if let url = URL(string: nextURL ?? ""), !imageExistsInSharedContainer(url: url){
         let nextIMG = try await ImageDownloadManager.shared.downloadImage(url)
         guard let nextIMG else {return}
         do {
@@ -315,6 +158,15 @@ func saveImageToSharedContainer(_ image: UIImage, url: URL) throws {
 
     // Write the data atomically to the file system.
     try imageData.write(to: fileURL, options: .atomic)
+}
+
+func imageExistsInSharedContainer(url: URL) -> Bool {
+    let fileName = url.lastPathComponent
+    
+    guard let sharedContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.bk.hop-on") else {
+        return false
+    }
+    return true
 }
 
 /// Loads a UIImage from a file in the App Group’s shared container using the full URL string to determine the file name.
