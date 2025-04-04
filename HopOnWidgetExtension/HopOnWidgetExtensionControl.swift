@@ -9,6 +9,8 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
+//TODO: Button to get a reminder whenever the next something gamemode is
+
 struct HopOnWidgetExtensionControl: ControlWidget {
     static let kind: String = "com.bk.Hop-On.HopOnWidgetExtension"
 

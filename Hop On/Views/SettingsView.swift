@@ -9,21 +9,34 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("API_KEY", store: UserDefaults(suiteName: "group.com.bk.hop-on")) private var apiKey: String?
+    @State private var apiResponse: String? = nil
     var body: some View {
         if let apiKey{
             Text(apiKey)
-            HStack{
-                Button("Remove API Key", systemImage: "trash", role: .destructive) {
-                    self.apiKey = nil
-                }.buttonStyle(.bordered)
-                Button {
-                    Task {
-                        await refresh()
-                    }
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                }.buttonStyle(.bordered)
+            VStack {
+                HStack{
+                    Button("Remove API Key", systemImage: "trash", role: .destructive) {
+                        self.apiKey = nil
+                    }.buttonStyle(.bordered)
+                }
 
+                Section("Debug"){
+                    Button {
+                        Task {
+                            apiResponse = try? await fetchMapRotationDebug()
+                        }
+                    } label: {
+                        Text("Get\(apiResponse != nil ? " new " : " " )api response")
+                            .animation(.bouncy, value: apiResponse)
+                    }
+                    .buttonStyle(.bordered )
+                    if let apiResponse {
+                        ScrollView {
+                            Text(apiResponse)
+                        }
+                        .animation(.easeInOut, value: apiResponse)
+                    }
+                }.padding(.top)
             }
             .navigationTitle("Settings")
         }

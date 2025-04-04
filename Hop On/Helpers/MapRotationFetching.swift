@@ -20,11 +20,7 @@ enum APIError: Error {
     case invalidURL
 }
 
-func fetchMapRotation() async throws -> ApexMapRotationResponse {
-    // Retrieve your API key from AppStorage or your preferred storage method
-//    guard let apiKey = UserDefaults.standard.string(forKey: "API_KEY"), !apiKey.isEmpty else {
-//        throw APIError.missingAPIKey
-//    }
+func fetchMapRotationData() async throws -> Data {
     guard let apiKey = UserDefaults(suiteName: "group.com.bk.hop-on")?.string(forKey: "API_KEY"), !apiKey.isEmpty else {
         throw APIError.missingAPIKey
     }
@@ -37,8 +33,19 @@ func fetchMapRotation() async throws -> ApexMapRotationResponse {
 
     // Fetch the data
     let (data, _) = try await URLSession.shared.data(from: url)
+    return data
+}
+
+func fetchMapRotation() async throws -> ApexMapRotationResponse {
+    let data = try await fetchMapRotationData()
     // Decode the JSON into our MapRotation model
     let decoder = JSONDecoder()
     let rotationResponse = try decoder.decode(ApexMapRotationResponse.self, from: data)
     return rotationResponse
+}
+
+func fetchMapRotationDebug() async throws -> String {
+    let data = try await fetchMapRotationData()
+    let debugString = String(data: data, encoding: .utf8)!
+    return debugString
 }

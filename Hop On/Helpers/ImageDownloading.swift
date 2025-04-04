@@ -166,6 +166,9 @@ func imageExistsInSharedContainer(url: URL) -> Bool {
     guard let sharedContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.bk.hop-on") else {
         return false
     }
+    if ((try? sharedContainerURL.appendingPathComponent(fileName).checkResourceIsReachable() == false) == nil) {
+        return false
+    }
     return true
 }
 

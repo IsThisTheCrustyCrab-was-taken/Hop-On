@@ -132,63 +132,54 @@ struct HopOnWidgetExtensionEntryView : View {
         return nil
     }
     var curBG: UIImage? {
-//        if let configuredResponse {
-//            if TimeInterval(configuredResponse.current.end) > Date().timeIntervalSince1970 {
-//                if let data = entry.curBG {
-//                    return UIImage(data: data)!
-//                }
-//            } else {
-//                if let next = configuredResponse.next {
-//                    if TimeInterval(next.end) > Date().timeIntervalSince1970 {
-//                        if let data = entry.nextBG {
-//                            return UIImage(data: data)!
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return nil
         if let data = entry.curBG {
             return UIImage(data: data)!
         }
         return nil
     }
     var body: some View {
-        VStack(alignment: .leading){
-            if configuredResponse != nil {
-                Text(entry.configuration.gameMode.title)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.bottom, 4)
-                    Text("\(currentResponse?.map ?? "--")")
-                    if let event = currentResponse?.eventName {
-                        Text("(\(event))")
-                    }
-                Text(entry.date, style: .timer)
-                    .monospacedDigit()
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(1, reservesSpace: true)
-                    .padding(.vertical, 2)
-                    .background(RoundedRectangle(cornerRadius: 4)
-                        .foregroundStyle(Color(red: 185/255, green: 48/255, blue: 56/255))
-                    )
-                HStack{
-                    Text("next:")
-                        .font(.footnote)
-                    Group{
-                        if let event = nextResponse?.eventName {
-                            Text("\(nextResponse?.map ?? "--") (\(event))")
-                        } else {
-                            Text("\(nextResponse?.map ?? "--")")
+        ZStack{
+            Text(entry.configuration.gameMode.title)
+                .padding(.top, 4)
+                .font(.caption2)
+                .foregroundStyle(.white)
+                .opacity(0.6)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            VStack(alignment: .leading){
+                if configuredResponse != nil {
+
+                        Text("\(currentResponse?.map ?? "--")")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        if let event = currentResponse?.eventName {
+                            Text("(\(event))")
+                        }
+                    Text(entry.date, style: .timer)
+                        .monospacedDigit()
+                        .fontWeight(.medium)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(1, reservesSpace: true)
+                        .padding(.vertical, 2)
+                        .background(RoundedRectangle(cornerRadius: 4)
+                            .foregroundStyle(Color(red: 185/255, green: 48/255, blue: 56/255))
+                        )
+                    HStack{
+                        Text("next:")
+                            .font(.footnote)
+                        Group{
+                            if let event = nextResponse?.eventName {
+                                Text("\(nextResponse?.map ?? "--") (\(event))")
+                            } else {
+                                Text("\(nextResponse?.map ?? "--")")
+                            }
                         }
                     }
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(2)
+                    .font(.callout)
                 }
-                .minimumScaleFactor(0.5)
-                .lineLimit(2)
-                .font(.callout)
             }
+            .padding()
         }
         .fontDesign(.rounded)
         .containerBackground(for: .widget){
@@ -207,6 +198,11 @@ struct HopOnWidgetExtensionEntryView : View {
             } else {
                 Rectangle()
                     .foregroundStyle(.fill)
+                    .overlay {
+                        ContainerRelativeShape()
+                            .stroke(.black, lineWidth: 28)
+                            .blur(radius: 10)
+                    }
             }
         }
     }
@@ -220,6 +216,7 @@ struct HopOnWidgetExtension: Widget {
             HopOnWidgetExtensionEntryView(entry: entry)
 
         }
+        .contentMarginsDisabled()
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("Map rotation Widget")
         .description("A widget that displays the current and next map/event rotation of a gamemode of your choice.")
